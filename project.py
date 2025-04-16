@@ -13,11 +13,9 @@ serialPort = i2c(port=1, address=0x3c) # Serial Port für Display
 oled = sh1106(serialPort, width=128, height=64) # SH1106-OLED initialisieren
 font = ImageFont.load_default()
  
-print("Geht los!")
- 
 def mein_callback(channel):
     # Hier kann alternativ eine Anwendung/Befehl etc. gestartet werden.
-    drawOnMonitor("Hau ab du Pimmel!")
+    drawOnMonitor("runter von meiner leitung du vogel!")
     oled.clear()
     oled.show()
     
@@ -32,6 +30,9 @@ def drawOnMonitor(text):
     draw.text((0, 0), text, font=font, fill=255)
     oled.display(image)
     time.sleep(3)
+    
+print("Geht los!")
 
 pir.when_motion = mein_callback
 pause()
+
