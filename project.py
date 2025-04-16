@@ -51,5 +51,3 @@ print("Geht los!")
 
 pir.when_motion = mein_callback
 pause()
-
-# Hennes ist ein Pimmel
