@@ -15,8 +15,6 @@ oled = sh1106(serialPort, width=128, height=64) # SH1106-OLED initialisieren
 font = ImageFont.load_default()
 motionMessage = "Weg hier!"
 
-
- 
 def mein_callback(channel):
     # Hier kann alternativ eine Anwendung/Befehl etc. gestartet werden.
     led.on()
@@ -25,15 +23,24 @@ def mein_callback(channel):
     oled.show()
     led.off()
     
+def wrap_text(text, line_lengt=23):
+    lines = [text[i:i+line_lengt] for i in range(0, len(text), line_lengt)]
+    return '§'.join(lines)
+
 def drawOnMonitor(text):
     print(text)
     oled.clear()
     oled.show()
     image = Image.new("1", (oled.width, oled.height))
-    
+    lineCount = 0
+
     draw = ImageDraw.Draw(image)
+
+    for line in wrap_text(text).split("§"):
+        print(line)
+        draw.text((0, lineCount), line, font=font, fill=255)
+        lineCount += 10
     
-    draw.text((0, 0), text, font=font, fill=255)
     oled.display(image)
     time.sleep(3)
 
