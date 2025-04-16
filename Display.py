@@ -2,6 +2,7 @@ from luma.core.interface.serial import i2c
 from luma.oled.device import sh1106
 from PIL import Image, ImageDraw, ImageFont
 import time
+import luma
 
 # I2C-Verbindung herstellen (Port 1, Adresse 0x3C ist Standard)
 serial = i2c(port=1, address=0x3C)
