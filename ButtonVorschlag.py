@@ -57,13 +57,12 @@ def button_pressed():
         draw_on_monitor("System ist an")
         print("System ist jetzt aktiv.")
     else:
-        print("System wird deaktiviert...")
-        system_aktiv = False
+        print("System läuft bereits.")
 
 # Startanzeige
 oled.clear()
 oled.show()
-draw_on_monitor("Druecke den Knopf, um das System zu aktivieren.")
+draw_on_monitor("Drücke den Knopf,\num das System zu\naktivieren.")
 print("Drücke den Knopf, um das System zu aktivieren.")
 
 # Ereignisse verbinden
