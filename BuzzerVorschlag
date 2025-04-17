@@ -1,14 +1,47 @@
-system_aktiv = False
+import time
+from gpiozero import MotionSensor, LED, Buzzer, Button
+from signal import pause
+from luma.core.interface.serial import i2c
+from luma.oled.device import sh1106
+from PIL import Image, ImageDraw, ImageFont
+
+# Setup
+pir = MotionSensor(17)
+led = LED(27)
+bz = Buzzer(22)
+button = Button(4)  # <-- Button an GPIO4
+serialPort = i2c(port=1, address=0x3c)
+oled = sh1106(serialPort, width=128, height=64)
+font = ImageFont.load_default()
+
+motionMessage = "Weg hier!"
+system_aktiv = False  # ← Anfangszustand: nicht aktiv
+
+def wrap_text(text, line_lengt=23):
+    lines = [text[i:i+line_lengt] for i in range(0, len(text), line_lengt)]
+    return '§'.join(lines)
+
+def drawOnMonitor(text):
+    oled.clear()
+    oled.show()
+    image = Image.new("1", (oled.width, oled.height))
+    draw = ImageDraw.Draw(image)
+
+    for i, line in enumerate(wrap_text(text).split("§")):
+        draw.text((0, i * 10), line, font=font, fill=255)
+
+    oled.display(image)
+    time.sleep(2)
 
 def mein_callback():
-    if system_aktiv:
+    if system_aktiv:  # <-- Nur wenn System aktiv ist
         led.on()
         bz.on()
         drawOnMonitor(motionMessage)
-        oled.clear()
-        oled.show()
         led.off()
         bz.off()
+        oled.clear()
+        oled.show()
 
 def activate_system():
     global system_aktiv
@@ -20,9 +53,13 @@ def activate_system():
         print("System deaktiviert")
         drawOnMonitor("System DEAKTIVIERT")
 
+# Nachricht abfragen
+print("Was soll als Meldung angezeigt werden?:")
+motionMessage = input()
+print(f"'{motionMessage}' wird benutzt.")
 print("Drücke den Knopf, um das System zu aktivieren/deaktivieren.")
 
-
+# Event-Zuweisungen
 pir.when_motion = mein_callback
 button.when_pressed = activate_system
 
