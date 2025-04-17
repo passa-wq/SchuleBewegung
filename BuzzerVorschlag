@@ -15,10 +15,12 @@ def activate_system():
     system_aktiv = not system_aktiv  # Umschalten
     if system_aktiv:
         print("System aktiviert")
-        drawOnMonitor("System aktiv!")
+        drawOnMonitor("System AKTIVIERT")
     else:
         print("System deaktiviert")
-        drawOnMonitor("System aus!")
+        drawOnMonitor("System DEAKTIVIERT")
+
+print("Drücke den Knopf, um das System zu aktivieren/deaktivieren.")
 
 
 pir.when_motion = mein_callback
