@@ -5,22 +5,18 @@ from luma.core.interface.serial import i2c
 from luma.oled.device import sh1106
 from PIL import Image, ImageDraw, ImageFont
 
-# Setup GPIOs
+# Setup
 pir = MotionSensor(17)
 led = LED(27)
 bz = Buzzer(22)
-button = Button(4)  # Button an GPIO4
-
-# OLED Display Setup
+button = Button(4)
 serialPort = i2c(port=1, address=0x3c)
 oled = sh1106(serialPort, width=128, height=64)
 font = ImageFont.load_default()
 
-# Anfangszustand: System ist aus
+# Anfangszustand: System ist AUS
 system_aktiv = False
-
-# Nachricht vom Benutzer
-motion_message = input("Was soll als Meldung angezeigt werden?\n")
+motion_message = ""
 
 def wrap_text(text, line_length=23):
     return [text[i:i+line_length] for i in range(0, len(text), line_length)]
@@ -46,21 +42,30 @@ def motion_detected():
         oled.show()
 
 def button_pressed():
-    global system_aktiv
+    global system_aktiv, motion_message
     if not system_aktiv:
+        print("System wird aktiviert...")
+        draw_on_monitor("System wird aktiviert...")
+        time.sleep(1)
+        
+        # Jetzt Nachricht vom Benutzer abfragen
+        motion_message = input("Was soll als Meldung angezeigt werden?\n")
+        print(f"Meldung gesetzt: '{motion_message}'")
+        
+        # System aktivieren
         system_aktiv = True
-        print("System ist jetzt aktiv!")
         draw_on_monitor("System ist an")
+        print("System ist jetzt aktiv.")
     else:
         print("System läuft bereits.")
 
-# Zu Beginn: System ist aus, OLED leer
+# Startanzeige
 oled.clear()
 oled.show()
-print(f"System startet deaktiviert.\nNachricht bei Bewegung: '{motion_message}'")
+draw_on_monitor("Drücke den Knopf,\num das System zu\naktivieren.")
 print("Drücke den Knopf, um das System zu aktivieren.")
 
-# Event-Verbindungen
+# Ereignisse verbinden
 pir.when_motion = motion_detected
 button.when_pressed = button_pressed
 
