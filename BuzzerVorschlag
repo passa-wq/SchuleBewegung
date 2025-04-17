@@ -1,0 +1,27 @@
+system_aktiv = False
+
+def mein_callback():
+    if system_aktiv:
+        led.on()
+        bz.on()
+        drawOnMonitor(motionMessage)
+        oled.clear()
+        oled.show()
+        led.off()
+        bz.off()
+
+def activate_system():
+    global system_aktiv
+    system_aktiv = not system_aktiv  # Umschalten
+    if system_aktiv:
+        print("System aktiviert")
+        drawOnMonitor("System aktiv!")
+    else:
+        print("System deaktiviert")
+        drawOnMonitor("System aus!")
+
+
+pir.when_motion = mein_callback
+button.when_pressed = activate_system
+
+pause()
